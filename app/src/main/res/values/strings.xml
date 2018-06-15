@@ -13,4 +13,8 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="login_tv_text">Логин</string>
+    <string name="et_login_hint">Логин</string>
+    <string name="et_password_hint">Пароль</string>
+    <string name="bt_login_text">Войти</string>
 </resources>
