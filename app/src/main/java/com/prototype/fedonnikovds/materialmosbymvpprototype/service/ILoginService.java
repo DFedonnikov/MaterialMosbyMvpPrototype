@@ -1,5 +1,7 @@
-package com.prototype.fedonnikovds.materialmosbymvpprototype.model;
+package com.prototype.fedonnikovds.materialmosbymvpprototype.service;
 
+
+import com.prototype.fedonnikovds.materialmosbymvpprototype.model.UserInfo;
 
 import java.util.Map;
 
@@ -23,6 +25,6 @@ public interface ILoginService {
             COOKIE,
             USER_AGENT
     })
-    Flowable<Object> login(@Body Map<String, String> body);
+    Flowable<UserInfo> login(@Body Map<String, String> body);
 
 }

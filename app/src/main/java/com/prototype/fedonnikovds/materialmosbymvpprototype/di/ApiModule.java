@@ -2,7 +2,8 @@ package com.prototype.fedonnikovds.materialmosbymvpprototype.di;
 
 import android.support.annotation.NonNull;
 
-import com.prototype.fedonnikovds.materialmosbymvpprototype.model.ILoginService;
+import com.prototype.fedonnikovds.materialmosbymvpprototype.service.ILoginService;
+import com.prototype.fedonnikovds.materialmosbymvpprototype.service.IMaterialService;
 
 import javax.inject.Singleton;
 
@@ -16,12 +17,18 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @Module
 public class ApiModule {
 
-    private static final String BASE_URL = "https://uchebnik-stable.mos.ru";
+    private static final String BASE_URL = "https://uchebnik.mos.ru";
 
     @Provides
     @Singleton
     ILoginService provideLoginService(@NonNull Retrofit retrofit) {
         return retrofit.create(ILoginService.class);
+    }
+
+    @Provides
+    @Singleton
+    IMaterialService provideMaterialService(@NonNull Retrofit retrofit) {
+        return retrofit.create(IMaterialService.class);
     }
 
 

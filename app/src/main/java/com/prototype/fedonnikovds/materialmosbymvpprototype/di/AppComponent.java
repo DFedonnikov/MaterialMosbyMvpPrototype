@@ -1,20 +1,20 @@
 package com.prototype.fedonnikovds.materialmosbymvpprototype.di;
 
-import com.prototype.fedonnikovds.materialmosbymvpprototype.model.ILoginService;
 import com.prototype.fedonnikovds.materialmosbymvpprototype.presenter.LoginPresenter;
-import com.prototype.fedonnikovds.materialmosbymvpprototype.utils.AuthUtils;
+import com.prototype.fedonnikovds.materialmosbymvpprototype.presenter.MaterialsPresenter;
+import com.prototype.fedonnikovds.materialmosbymvpprototype.ui.MainActivity;
 
 import javax.inject.Singleton;
 
 import dagger.Component;
 
 @Singleton
-@Component(modules = {ApiModule.class, UtilsModule.class})
+@Component(modules = {AppModule.class, ApiModule.class, UtilsModule.class, NavigationModule.class})
 public interface AppComponent {
 
-    ILoginService getLoginService();
-
-    AuthUtils getAuthUtils();
+    void inject(MainActivity mainActivity);
 
     void inject(LoginPresenter loginPresenter);
+
+    void inject(MaterialsPresenter materialsPresenter);
 }
