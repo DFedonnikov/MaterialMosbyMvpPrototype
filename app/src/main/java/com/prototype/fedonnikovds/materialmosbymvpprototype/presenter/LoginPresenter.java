@@ -2,7 +2,9 @@ package com.prototype.fedonnikovds.materialmosbymvpprototype.presenter;
 
 import com.hannesdorfmann.mosby3.mvp.MvpBasePresenter;
 import com.prototype.fedonnikovds.materialmosbymvpprototype.App;
-import com.prototype.fedonnikovds.materialmosbymvpprototype.model.ILoginService;
+import com.prototype.fedonnikovds.materialmosbymvpprototype.Screens;
+import com.prototype.fedonnikovds.materialmosbymvpprototype.model.UserInfo;
+import com.prototype.fedonnikovds.materialmosbymvpprototype.service.ILoginService;
 import com.prototype.fedonnikovds.materialmosbymvpprototype.utils.AuthUtils;
 import com.prototype.fedonnikovds.materialmosbymvpprototype.view.ILoginView;
 
@@ -12,8 +14,10 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import ru.terrakok.cicerone.Router;
 
 public class LoginPresenter extends MvpBasePresenter<ILoginView> implements ILoginPresenter {
 
@@ -21,12 +25,15 @@ public class LoginPresenter extends MvpBasePresenter<ILoginView> implements ILog
     AuthUtils authUtils;
     @Inject
     ILoginService loginService;
-
-    private CompositeDisposable compositeDisposable;
+    @Inject
+    Router router;
+    @Inject
+    UserInfo userInfo;
+    @Inject
+    CompositeDisposable compositeDisposable;
 
     public LoginPresenter() {
         App.getAppComponent().inject(this);
-        compositeDisposable = new CompositeDisposable();
     }
 
     @Override
@@ -45,12 +52,21 @@ public class LoginPresenter extends MvpBasePresenter<ILoginView> implements ILog
     public void login(String login, String password) {
         Disposable loginDisposable = loginService
                 .login(createBody(login, password))
-                .subscribe(x -> ifViewAttached(view -> {
-                    //TODO
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(data -> ifViewAttached(view -> {
+                    initUserInfo(data);
+                    router.navigateTo(Screens.MATERIALS_SCREEN);
                 }), throwable -> {
-                    //TODO
+                    throwable.printStackTrace();
+                    ifViewAttached(view -> view.showError(throwable.getMessage()));
                 });
         compositeDisposable.add(loginDisposable);
+    }
+
+    private void initUserInfo(UserInfo data) {
+        userInfo.setId(data.getId());
+        userInfo.setAuthToken(data.getAuthToken());
+        userInfo.setProfiles(data.getProfiles());
     }
 
     private Map<String, String> createBody(String login, String password) {
@@ -61,5 +77,10 @@ public class LoginPresenter extends MvpBasePresenter<ILoginView> implements ILog
         content.put("password_hash", passHash);
         content.put("password_hash2", passHashNoSalt);
         return content;
+    }
+
+    @Override
+    public void onBackCommand() {
+        router.exit();
     }
 }
